@@ -2,8 +2,9 @@
 
 namespace WebApiDemo.Model.Dto
 {
-    public class VillaDto
+    public class VillaUpdateDto
     {
+        [Required]
         public int Id { get; set; }
         [Required]
         [MaxLength(30)]
@@ -12,8 +13,13 @@ namespace WebApiDemo.Model.Dto
         [Required]
         public int Rate { get; set; }
         public string ImageUrl { get; set; }
+        
         public string Amenity { get; set; }
+        [Required]
+
         public int Occupancy { get; set; }
+        [Required]
+
         public int sqft { get; set; }
     }
 }
