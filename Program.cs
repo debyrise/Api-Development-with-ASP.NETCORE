@@ -5,6 +5,8 @@
 
 using Microsoft.EntityFrameworkCore;
 using WebApiDemo.Data;
+using WebApiDemo.Repository;
+using WebApiDemo.Repository.IRepository;
 
 namespace WebApiDemo
 {
@@ -17,6 +19,8 @@ namespace WebApiDemo
 
 
             // Add services to the container.
+
+            //log and serilog 
             //Log.Logger = new LoggerConfiguration().MinimumLevel.Debug()
             //    .WriteTo.File("log/villaLog.txt", rollingInterval: RollingInterval.Day).CreateLogger();
 
@@ -28,8 +32,13 @@ namespace WebApiDemo
             });
 
             builder.Services.AddAutoMapper(typeof(MappingConfig));
+            builder.Services.AddScoped<IVillaRepository, VillaRepository>();
+            builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
 
+
+            //patch
             builder.Services.AddControllers().AddNewtonsoftJson();
+
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
