@@ -13,14 +13,14 @@ using WebApiDemo.Repository.IRepository;
 namespace WebApiDemo.Controllers
 {
     [Route("api/[controller]")]
-    //[Route("api/villaNumberApi")]
+    //[Route("api/villaApi")]
     [ApiController]
-    public class VillaApiController : ControllerBase
+    public class VillaAPIController : ControllerBase
     {
         protected ApiResponse _response;
         private readonly IVillaRepository _dbContext;
         private readonly IMapper _mapper;
-        public VillaApiController(IVillaRepository dbContext, IMapper mapper)
+        public VillaAPIController(IVillaRepository dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -80,7 +80,7 @@ namespace WebApiDemo.Controllers
             catch (Exception ex)
             {
                 _response.IsSuccess = false;
-                _response.ErrorMessage = new List<string>() { ex.ToString() };
+                _response.ErrorMessage = new List<string>() {ex.ToString() };
 
             }
             return _response;
@@ -100,7 +100,7 @@ namespace WebApiDemo.Controllers
 
                 if (await _dbContext.GetAsync(x => x.Name.ToLower() == CreateDto.Name.ToLower()) != null)
                 {
-                    ModelState.AddModelError("customError", "Villa already exist!");
+                    ModelState.AddModelError("ErrorMessage", "Villa ID is invalid!");
 
                     return BadRequest(ModelState);
                 }
@@ -189,7 +189,7 @@ namespace WebApiDemo.Controllers
 
                 Villa model = _mapper.Map<Villa>(UpdateDto);
 
-                await _dbContext.RemoveAsync(model);
+                await _dbContext.UpdateAsync(model);
                 _response.statusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
 
