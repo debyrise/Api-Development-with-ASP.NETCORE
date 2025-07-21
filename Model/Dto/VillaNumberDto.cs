@@ -6,6 +6,10 @@ namespace WebApiDemo.Model.Dto
     {
         [Required]
         public int VillaNo { get; set; }
+        [Required]
+        public int VillaID { get; set; }
         public string SpecilDetail { get; set; }
+        public VillaDto Villa { get; set; }
     }
+
 }

@@ -37,7 +37,7 @@ namespace WebApiDemo.Controllers
         {
             try
             {
-                IEnumerable<VillaNumber> villaListNumber = await _dbContextNumber.GetAllAsync();
+                IEnumerable<VillaNumber> villaListNumber = await _dbContextNumber.GetAllAsync(includeproperties:"Villa");
                 _response.result = _mapper.Map<List<VillaNumberDto>>(villaListNumber);
                 _response.statusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -102,13 +102,13 @@ namespace WebApiDemo.Controllers
 
                 if (await _dbContextNumber.GetAsync(x => x.VillaNo == CreateDto.VillaNo) != null)
                 {
-                    ModelState.AddModelError("customError", "Villa Number already exist!");
+                    ModelState.AddModelError("ErrorMessage", "Villa Number already exist!");
 
                     return BadRequest(ModelState);
                 }
                 if(await _dbContext.GetAsync(x => x.Id == CreateDto.VillaID ) == null)
                 {
-                    ModelState.AddModelError("customError", "Villa ID Is Invalid!");
+                    ModelState.AddModelError("ErrorMessage", "Villa ID Is Invalid!");
 
                     return BadRequest(ModelState);
 
@@ -188,7 +188,7 @@ namespace WebApiDemo.Controllers
 
                 if (await _dbContext.GetAsync(x => x.Id == UpdateDto.VillaID) == null)
                 {
-                    ModelState.AddModelError("customError", "Villa ID Is Invalid!");
+                    ModelState.AddModelError("ErrorMessage", "Villa ID Is Invalid!");
 
                     return BadRequest(ModelState);
 
@@ -196,7 +196,7 @@ namespace WebApiDemo.Controllers
 
                 VillaNumber model = _mapper.Map<VillaNumber>(UpdateDto);
 
-                await _dbContextNumber.RemoveAsync(model);
+                await _dbContextNumber.UpdateAsync(model);
                 _response.statusCode = HttpStatusCode.NoContent;
                 _response.IsSuccess = true;
 
