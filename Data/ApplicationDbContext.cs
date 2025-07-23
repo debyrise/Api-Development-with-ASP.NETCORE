@@ -9,6 +9,8 @@ namespace WebApiDemo.Data
         {
             
         }
+        public DbSet<LocalUser> localUsers { get; set; }
+
         public DbSet<Villa> Villas { get; set; }
         public DbSet<VillaNumber> VillaNumbers { get; set; }
 
