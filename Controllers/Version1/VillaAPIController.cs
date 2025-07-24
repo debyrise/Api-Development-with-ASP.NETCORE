@@ -11,11 +11,12 @@ using WebApiDemo.Model;
 using WebApiDemo.Model.Dto;
 using WebApiDemo.Repository.IRepository;
 
-namespace WebApiDemo.Controllers
+namespace WebApiDemo.Controllers.Version1
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     //[Route("api/villaApi")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class VillaAPIController : ControllerBase
     {
         protected ApiResponse _response;
@@ -25,11 +26,10 @@ namespace WebApiDemo.Controllers
         {
             _dbContext = dbContext;
             _mapper = mapper;
-            this._response = new();
+            _response = new();
         }
 
         [HttpGet]// to return all the record
-        [Authorize]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
@@ -57,7 +57,6 @@ namespace WebApiDemo.Controllers
 
 
         [HttpGet("{id:int}", Name = "GetVilla")] //to return one record
-        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status200OK)]
@@ -96,7 +95,7 @@ namespace WebApiDemo.Controllers
 
 
         [HttpPost]
-        //[Authorize(Roles = "admin")]
+        [Authorize(Roles = "admin")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
@@ -152,7 +151,7 @@ namespace WebApiDemo.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [Authorize(Roles = "CUSTOM")]
+        [Authorize(Roles = "Admin")]
 
         public async Task<ActionResult<ApiResponse>> DeleteVilla(int id)
         {
@@ -184,7 +183,7 @@ namespace WebApiDemo.Controllers
 
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}", Name = "UpdateVilla")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]

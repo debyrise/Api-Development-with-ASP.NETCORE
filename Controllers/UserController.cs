@@ -7,8 +7,9 @@ using WebApiDemo.Repository.IRepository;
 
 namespace WebApiDemo.Controllers
 {
-    [Route("api/UsersAuth")]
+    [Route("api/v{version:apiVersion}/UsersAuth")]
     [ApiController]
+    [ApiVersionNeutral]
     public class UserController : Controller
     {
         private readonly IUserRepository _userRepository;
@@ -17,7 +18,7 @@ namespace WebApiDemo.Controllers
         public UserController(IUserRepository userRepository)
         {
             _userRepository = userRepository;
-            this._response = new();
+            _response = new();
         }
 
 
