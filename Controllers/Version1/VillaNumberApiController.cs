@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.JsonPatch;
@@ -10,11 +11,12 @@ using WebApiDemo.Model;
 using WebApiDemo.Model.Dto;
 using WebApiDemo.Repository.IRepository;
 
-namespace WebApiDemo.Controllers
+namespace WebApiDemo.Controllers.Version1
 {
-    [Route("api/[controller]")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     //[Route("api/villaNumberApi")]
     [ApiController]
+    [ApiVersion("1.0")]
     public class VillaNumberApiController : ControllerBase
     {
         protected ApiResponse _response;
@@ -25,10 +27,19 @@ namespace WebApiDemo.Controllers
         {
             _dbContextNumber = dbContextNumber;
             _mapper = mapper;
-            this._response = new();
+            _response = new();
             _dbContext = dbContext;
         }
 
+        [HttpGet("GetString")]
+        public IEnumerable<string> Get()
+        {
+            return new string[] { "string1", "string2" };
+        }
+
+
+
+        //[MapToApiVersion("1.0")]
         [HttpGet]// to return all the record
         [ProducesResponseType(StatusCodes.Status200OK)]
         //[ProducesResponseType(typeof(User), 200)]
@@ -52,6 +63,8 @@ namespace WebApiDemo.Controllers
             return _response;
 
         }
+
+       
 
 
         [HttpGet("{id:int}", Name = "GetVillaNumber")] //to return one record
@@ -89,7 +102,7 @@ namespace WebApiDemo.Controllers
         }
 
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -137,7 +150,7 @@ namespace WebApiDemo.Controllers
             }
             return _response;
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id:int}", Name = "DeleteVillaNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -172,7 +185,7 @@ namespace WebApiDemo.Controllers
 
         }
 
-
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id:int}", Name = "UpdateVillaNumber")]
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
