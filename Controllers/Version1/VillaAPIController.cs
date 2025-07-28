@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
+using System.Text.Json;
 using WebApiDemo.Data;
 using WebApiDemo.Model;
 using WebApiDemo.Model.Dto;
@@ -30,16 +31,32 @@ namespace WebApiDemo.Controllers.Version1
         }
 
         [HttpGet]// to return all the record
+        [ResponseCache(CacheProfileName = "Default30")] //cacheing
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status403Forbidden)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         //[ProducesResponseType(typeof(User), 200)]
 
-        public async Task<ActionResult<ApiResponse>> GetVillas()
+
+        public async Task<ActionResult<ApiResponse>> GetVillas([FromQuery(Name = "filterOccupancy")]int? Occupancy, [FromQuery] string? search, int PageSize = 0, int PageNumber = 1)
         {
             try
             {
-                IEnumerable<Villa> villaList = await _dbContext.GetAllAsync();
+                IEnumerable<Villa> villaList;
+                if(Occupancy > 0)
+                {
+                    villaList = await _dbContext.GetAllAsync(x => x.Occupancy == Occupancy, PageSize:PageSize, PageNumber:PageNumber);
+                }
+                else
+                {
+                    villaList = await _dbContext.GetAllAsync(PageSize: PageSize, PageNumber:PageNumber);
+                }
+                if (!string.IsNullOrEmpty(search))
+                {
+                    villaList = villaList.Where(x => x.Name.ToLower().Contains(search));
+                }
+                Pagination pagination = new() { PageNumber = PageNumber, PageSize = PageSize };
+                Response.Headers.Add("x-pagination", JsonSerializer.Serialize(pagination));
                 _response.result = _mapper.Map<List<VillaDto>>(villaList);
                 _response.statusCode = HttpStatusCode.OK;
                 return Ok(_response);
@@ -62,6 +79,8 @@ namespace WebApiDemo.Controllers.Version1
         [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
+       // [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)] //cacheing
+
 
         public async Task<ActionResult<ApiResponse>> GetAsync(int id)
         {

@@ -38,7 +38,8 @@ namespace WebApiDemo.Repository
             {
                 query = query.Where(filter);
             }
-            if(includeproperties != null)
+           
+            if (includeproperties != null)
             {
                 foreach(var includeProp in includeproperties.Split(new char[] {','}, StringSplitOptions.RemoveEmptyEntries))
                 {
@@ -48,13 +49,25 @@ namespace WebApiDemo.Repository
             return await query.FirstOrDefaultAsync();
         }
 
-        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeproperties = null)
+        public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>>? filter = null, string? includeproperties = null, int PageSize = 0, int PageNumber = 1)
         {
             IQueryable<T> query = Dbset;
             if (filter != null)
             {
                 query = query.Where(filter);
             }
+            if (PageSize > 0)
+            {
+                if (PageSize > 100)
+                {
+                    PageSize = 100;
+                }
+                //skip0.take(5)
+                //page number-2 page size -5
+                //skip(5*(1)) take(5)
+                query = query.Skip(PageSize * (PageNumber - 1)).Take(PageSize);
+            }
+
             if (includeproperties != null)
             {
                 foreach (var includeProp in includeproperties.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries))
