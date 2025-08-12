@@ -4,6 +4,7 @@
 //using WebApiDemo.Logging;
 
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
@@ -12,6 +13,7 @@ using Microsoft.OpenApi.Models;
 using System.Net;
 using System.Text;
 using WebApiDemo.Data;
+using WebApiDemo.Model;
 using WebApiDemo.Repository;
 using WebApiDemo.Repository.IRepository;
 
@@ -37,9 +39,10 @@ namespace WebApiDemo
             {
                 option.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
             });
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<ApplicationDbContext>();
             builder.Services.AddResponseCaching();
             builder.Services.AddScoped<IVillaRepository, VillaRepository>();
-            builder.Services.AddScoped<IUserRepository, UserRepositoy>();
+            builder.Services.AddScoped<IUserRepository, UserRepository>();
             builder.Services.AddScoped<IVillaNumberRepository, VillaNumberRepository>();
             builder.Services.AddAutoMapper(typeof(MappingConfig));
             builder.Services.AddApiVersioning(options =>

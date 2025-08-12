@@ -1,14 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using WebApiDemo.Model;
 
 namespace WebApiDemo.Data
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext > options) : base (options)
         {
             
         }
+        public DbSet<ApplicationUser> ApplicationUsers { get; set; }
+
+
         public DbSet<LocalUser> localUsers { get; set; }
 
         public DbSet<Villa> Villas { get; set; }

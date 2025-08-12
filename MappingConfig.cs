@@ -21,6 +21,7 @@ namespace WebApiDemo
 
             CreateMap<VillaNumber, VillaNumberCreateDto>().ReverseMap();
             CreateMap<VillaNumber, VillaNumberUpdateDto>().ReverseMap();
+            CreateMap<ApplicationUser, UserDTO>().ReverseMap();
 
 
         }
